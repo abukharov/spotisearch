@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "cross-env NODE_ENV=production webpack",
+        "publish": "aws s3 cp --recursive dist s3://spotify-search-yarrow-su",
         "dev": "webpack-dev-server --content-base dist",
         "lint": "npm-run-all -c lint:*",
         "lint:eslint": "eslint src/*.js",
@@ -43,6 +44,7 @@
         "prettier-plugin-svelte": "^0.7.0",
         "ress": "^2.0.4",
         "sass-loader": "^8.0.2",
+        "spotify-web-api-js": "^1.2.0",
         "style-loader": "^1.1.4",
         "stylelint": "^13.3.2",
         "stylelint-config-standard": "^20.0.0",
@@ -74,5 +76,8 @@
         "*.{scss}": [
             "npm run lint:stylelint"
         ]
+    },
+    "dependencies": {
+        "svelte-spa-router": "^2.1.0"
     }
 }

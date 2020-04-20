@@ -8,38 +8,38 @@ const prod = mode === 'production';
 module.exports = {
     entry: {
         bundle: './src/main.js',
-        global: './src/scss/main.scss',
+        global: './src/scss/main.scss'
     },
     resolve: {
         alias: {
-            svelte: path.resolve('node_modules', 'svelte'),
+            svelte: path.resolve('node_modules', 'svelte')
         },
         extensions: ['.mjs', '.js', '.svelte'],
-        mainFields: ['svelte', 'browser', 'module', 'main'],
+        mainFields: ['svelte', 'browser', 'module', 'main']
     },
     output: {
         path: __dirname + '/dist',
         filename: '[name].js',
-        chunkFilename: '[name].[id].js',
+        chunkFilename: '[name].[id].js'
     },
     module: {
         rules: [
             {
                 test: /\.svelte$/,
                 use: {
-                  loader: 'svelte-loader',
-                  options: {
-                    preprocess: require('svelte-preprocess')({
-                      scss: true,
-                      postcss: {
-                        plugins: [require('autoprefixer')]
-                      }
-                    }),
-                    emitCss: true,
-                    hotReload: true
-                  }
+                    loader: 'svelte-loader',
+                    options: {
+                        preprocess: require('svelte-preprocess')({
+                            scss: true,
+                            postcss: {
+                                plugins: [require('autoprefixer')]
+                            }
+                        }),
+                        emitCss: true,
+                        hotReload: true
+                    }
                 }
-              },
+            },
             {
                 test: /\.css$/,
                 use: [
@@ -48,31 +48,31 @@ module.exports = {
                      * For developing, use 'style-loader' instead.
                      * */
                     prod ? MiniCssExtractPlugin.loader : 'style-loader',
-                    'css-loader',
-                ],
+                    'css-loader'
+                ]
             },
             {
                 test: /\.scss$/,
                 use: [
                     {
-                        loader: MiniCssExtractPlugin.loader,
+                        loader: MiniCssExtractPlugin.loader
                     },
                     {
-                        loader: 'css-loader',
+                        loader: 'css-loader'
                     },
                     {
-                        loader: 'sass-loader',
-                    },
-                ],
-            },
-        ],
+                        loader: 'sass-loader'
+                    }
+                ]
+            }
+        ]
     },
     mode,
     plugins: [
         new MiniCssExtractPlugin({
-            filename: '[name].css',
+            filename: '[name].css'
         }),
-        new FixStyleOnlyEntriesPlugin(),
+        new FixStyleOnlyEntriesPlugin()
     ],
-    devtool: prod ? false : 'source-map',
+    devtool: prod ? false : 'source-map'
 };

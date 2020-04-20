@@ -1,6 +1,7 @@
+const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
-const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
@@ -18,9 +19,9 @@ module.exports = {
         mainFields: ['svelte', 'browser', 'module', 'main']
     },
     output: {
-        path: __dirname + '/dist',
-        filename: '[name].js',
-        chunkFilename: '[name].[id].js'
+        path: path.join(__dirname, 'dist'),
+        filename: '[name]-[hash].js',
+        chunkFilename: '[name]-[hash].[id].js'
     },
     module: {
         rules: [
@@ -69,8 +70,12 @@ module.exports = {
     },
     mode,
     plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            filename: path.join(__dirname, 'dist', 'index.html')
+        }),
         new MiniCssExtractPlugin({
-            filename: '[name].css'
+            filename: '[name]-[hash].css'
         }),
         new FixStyleOnlyEntriesPlugin()
     ],

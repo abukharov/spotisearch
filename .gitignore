@@ -167,5 +167,4 @@ typings/
 .svg
 
 # build files
-/dist/*
-!/dist/index.html
+dist/

@@ -1,14 +1,21 @@
 <script>
+    import Navbar from './views/Navbar.svelte';
     import SpotifySearch from './views/SpotifySearch.svelte';
 
     import { onMount } from 'svelte';
     import {spotifyClientId, uuidv4} from './lib/auth';
+    import spotify from './lib/spotify';
 
+    let user;
     let authToken = localStorage.getItem('authToken');
     let errorMessage = localStorage.getItem('errorMessage');
 
+    if (authToken) {
+        spotify.setAccessToken(authToken);
+    }
+
     $: isError = errorMessage !== null;
-    $: isAuthorised = authToken !== null;
+    $: isAuthorised = spotify.getAccessToken() !== null;
 
     function spotifyAuthStart() {
         if (!localStorage.getItem('stateUuid')) {
@@ -21,6 +28,11 @@
         spotifyAuthUri.searchParams.set('scope', 'user-read-private user-read-email');
         spotifyAuthUri.searchParams.set('state', localStorage.getItem('stateUuid'));
         location.replace(spotifyAuthUri.href);
+    }
+
+    async function getUserProfile() {
+        const r = await spotify.getMe();
+        user = r;
     }
 
     function spotifyLogout() {
@@ -45,19 +57,16 @@
     });
 </script>
 
-<style src="./style.scss" lang="scss">
-
-</style>
-
-<h1>Hello user!</h1>
+<Navbar authStart={spotifyAuthStart} logout={spotifyLogout} user={user}/>
 
 {#if isError}
     <p class="error">{errorMessage}</p>
 {/if}
 
 {#if isAuthorised}
-    <p class="announce">Authorised to Spotify</p><button on:click={spotifyLogout}>Logout</button>
-    <SpotifySearch token={authToken}/>
-{:else}
-    <button on:click={spotifyAuthStart}>Authenticate to Spotify</button>
+    {#await getUserProfile()}
+        <p>Loading user...</p>
+    {:then}
+        <SpotifySearch user={user}/>
+    {/await}
 {/if}

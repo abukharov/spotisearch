@@ -3,7 +3,6 @@
 
     import { onMount } from 'svelte';
     import {spotifyClientId, uuidv4} from './lib/auth';
-    const redirectUri = 'http://spotify-search-yarrow-su.s3-website-ap-southeast-2.amazonaws.com';
 
     let authToken = localStorage.getItem('authToken');
     let errorMessage = localStorage.getItem('errorMessage');
@@ -18,7 +17,7 @@
         const spotifyAuthUri = new URL('https://accounts.spotify.com/authorize');
         spotifyAuthUri.searchParams.set('client_id', spotifyClientId);
         spotifyAuthUri.searchParams.set('response_type', 'token');
-        spotifyAuthUri.searchParams.set('redirect_uri', redirectUri);
+        spotifyAuthUri.searchParams.set('redirect_uri', location.href);
         spotifyAuthUri.searchParams.set('scope', 'user-read-private user-read-email');
         spotifyAuthUri.searchParams.set('state', localStorage.getItem('stateUuid'));
         location.replace(spotifyAuthUri.href);

@@ -1,7 +1,7 @@
 {
-    "name": "sps",
+    "name": "spotisearch",
     "version": "0.0.1",
-    "description": "Spotify playlist search service",
+    "description": "Searches for tracks in your Spotify playlists",
     "main": "index.js",
     "scripts": {
         "build": "rimraf ./dist && cross-env NODE_ENV=production webpack",

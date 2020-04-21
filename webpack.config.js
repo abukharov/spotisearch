@@ -79,6 +79,5 @@ module.exports = {
         }),
         new FixStyleOnlyEntriesPlugin()
     ],
-    // devtool: prod ? false : 'source-map'
-    devtool: 'source-map'
+    devtool: prod ? false : 'source-map'
 };

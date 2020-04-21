@@ -1,6 +1,7 @@
+const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
-const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
@@ -8,38 +9,38 @@ const prod = mode === 'production';
 module.exports = {
     entry: {
         bundle: './src/main.js',
-        global: './src/scss/main.scss',
+        global: './src/scss/main.scss'
     },
     resolve: {
         alias: {
-            svelte: path.resolve('node_modules', 'svelte'),
+            svelte: path.resolve('node_modules', 'svelte')
         },
         extensions: ['.mjs', '.js', '.svelte'],
-        mainFields: ['svelte', 'browser', 'module', 'main'],
+        mainFields: ['svelte', 'browser', 'module', 'main']
     },
     output: {
-        path: __dirname + '/dist',
-        filename: '[name].js',
-        chunkFilename: '[name].[id].js',
+        path: path.join(__dirname, 'dist'),
+        filename: '[name]-[hash].js',
+        chunkFilename: '[name]-[hash].[id].js'
     },
     module: {
         rules: [
             {
                 test: /\.svelte$/,
                 use: {
-                  loader: 'svelte-loader',
-                  options: {
-                    preprocess: require('svelte-preprocess')({
-                      scss: true,
-                      postcss: {
-                        plugins: [require('autoprefixer')]
-                      }
-                    }),
-                    emitCss: true,
-                    hotReload: true
-                  }
+                    loader: 'svelte-loader',
+                    options: {
+                        preprocess: require('svelte-preprocess')({
+                            scss: true,
+                            postcss: {
+                                plugins: [require('autoprefixer')]
+                            }
+                        }),
+                        emitCss: true,
+                        hotReload: true
+                    }
                 }
-              },
+            },
             {
                 test: /\.css$/,
                 use: [
@@ -48,31 +49,35 @@ module.exports = {
                      * For developing, use 'style-loader' instead.
                      * */
                     prod ? MiniCssExtractPlugin.loader : 'style-loader',
-                    'css-loader',
-                ],
+                    'css-loader'
+                ]
             },
             {
                 test: /\.scss$/,
                 use: [
                     {
-                        loader: MiniCssExtractPlugin.loader,
+                        loader: MiniCssExtractPlugin.loader
                     },
                     {
-                        loader: 'css-loader',
+                        loader: 'css-loader'
                     },
                     {
-                        loader: 'sass-loader',
-                    },
-                ],
-            },
-        ],
+                        loader: 'sass-loader'
+                    }
+                ]
+            }
+        ]
     },
     mode,
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: '[name].css',
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            filename: path.join(__dirname, 'dist', 'index.html')
         }),
-        new FixStyleOnlyEntriesPlugin(),
+        new MiniCssExtractPlugin({
+            filename: '[name]-[hash].css'
+        }),
+        new FixStyleOnlyEntriesPlugin()
     ],
-    devtool: prod ? false : 'source-map',
+    devtool: prod ? false : 'source-map'
 };

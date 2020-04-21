@@ -1,1 +1,6 @@
-@import 'node_modules/ress/ress';
+@import 'node_modules/bootstrap/dist/css/bootstrap.min';
+
+.highlited {
+    background-color: #ffff00;
+    font-weight: bold;
+}

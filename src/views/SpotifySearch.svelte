@@ -1,50 +1,64 @@
 <script>
+    import { Table, FormGroup, Label, Input } from 'sveltestrap';
+
     import Playlist from './Playlist.svelte';
-    import spotify from '../lib/spotify';
+    import spotify, {backoff, throttled} from '../lib/spotify';
     import { onMount } from 'svelte';
 
     export let user;
 
     let playlists = [];
-    let playlistsLoaded = false;
+    let playlistsLoading = false;
+    let searchString = '';
 
     async function loadUserPlaylists() {
-        let r;
-        r = await spotify.getUserPlaylists(user.id);
-        playlists.concat()
+        const p = new Promise(async function(resolve, reject) {
+            let r = await throttled.add(backoff.bind(this, 10, spotify.getUserPlaylists.bind(this, user.id, {limit: 5, offset: 0})));
+            playlists = playlists.concat(r.items);
+            const loop = async function() {
+                if (!r.next) {
+                    playlistsLoading = false;
+                    resolve();
+                    return null;
+                }
+                const urlNext = new URL(r.next);
+                const offsetNext = urlNext.searchParams.get('offset');
+                const limitNext = urlNext.searchParams.get('limit');
+                r = await throttled.add(backoff.bind(this, 10, spotify.getUserPlaylists.bind(this, user.id, {limit: limitNext, offset: offsetNext})));
+                playlists = playlists.concat(r.items);
+                loop();
+            }
+            process.nextTick(loop);
+        });
+        return p;
     }
 
     onMount(async function() {
-        let r;
-        r = await spotify.getUserPlaylists(user.id, {limit: 50, offset: 0});
-        playlists = playlists.concat(r.items);
-        while (r.next) {
-            const urlNext = new URL(r.next);
-            const offsetNext = urlNext.searchParams.get('offset');
-            const limitNext = urlNext.searchParams.get('limit');
-            r = await spotify.getUserPlaylists(user.id, {limit: limitNext, offset: offsetNext});
-            playlists = playlists.concat(r.items);
-        }
-        playlistsLoaded = true;
+        playlistsLoading = true;
+        await loadUserPlaylists();
     });
 </script>
 
-{#if playlistsLoaded}
-    <table class="table table-condensed">
-    <thead>
-      <tr>
+<FormGroup>
+  <Label>Search for</Label>
+  <Input type="text" bind:value={searchString} />
+</FormGroup>
+
+<Table hover>
+<thead class="thead-dark">
+    <tr>
         <th>Name</th>
         <th>Owner</th>
+        <th></th>
         <th>Songs</th>
-        <th>Loaded</th>
-      </tr>
-    </thead>
-    <tbody>
-    {#each playlists as playlist}
-        <Playlist playlist={playlist}/>
-    {/each}
-    </tbody>
-    </table>
-{:else}
+    </tr>
+</thead>
+<tbody>
+{#each playlists as playlist}
+    <Playlist playlist={playlist} searchString={searchString}/>
+{/each}
+</tbody>
+</Table>
+{#if playlistsLoading}
     <p>Loading playlists...</p>
 {/if}

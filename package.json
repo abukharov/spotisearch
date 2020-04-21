@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "rimraf ./dist && cross-env NODE_ENV=production webpack",
-        "publish": "aws s3 cp --recursive dist s3://spotify-search-yarrow-su",
+        "publish": "aws s3 rm --recursive s3://spotify-search-yarrow-su && aws s3 cp --recursive dist s3://spotify-search-yarrow-su",
         "dev": "webpack-dev-server --content-base dist",
         "lint": "npm-run-all -c lint:*",
         "lint:eslint": "eslint src/*.js",
@@ -44,6 +44,7 @@
         "postcss": "^7.0.27",
         "prettier": "^2.0.4",
         "prettier-plugin-svelte": "^0.7.0",
+        "promise-throttle": "^1.0.1",
         "ress": "^2.0.4",
         "rimraf": "^3.0.2",
         "sass-loader": "^8.0.2",

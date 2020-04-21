@@ -59,7 +59,7 @@
 
     async function loadPlaylistTracks() {
         const p = new Promise(async function(resolve, reject) {
-            let r = await throttled.add(backoff.bind(this, 10, spotify.getPlaylistTracks.bind(this, playlist.id, {limit: 20, offset: 0})));
+            let r = await throttled.add(backoff.bind(this, 10, spotify.getPlaylistTracks.bind(this, playlist.id, {limit: 100, offset: 0})));
             tracks = tracks.concat(r.items);
             const loop = async function() {
                 if (!r.next) {

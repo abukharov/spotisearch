@@ -22,7 +22,7 @@
         if (!match) {
             return prop;
         }
-        const markupProp = `${prop.slice(0, match.index)}<span class="highlited">${match[0]}</span>${prop.slice(match.index + match[0].length)}`;
+        const markupProp = `${prop.slice(0, match.index)}<span class="highlighted">${match[0]}</span>${prop.slice(match.index + match[0].length)}`;
         return markupProp;
     }
 

@@ -1,6 +1,8 @@
 <script>
     import Navbar from './views/Navbar.svelte';
     import SpotifySearch from './views/SpotifySearch.svelte';
+    import Announce from './views/Announce.svelte';
+    import Footer from './views/Footer.svelte';
 
     import { onMount } from 'svelte';
     import {spotifyClientId, uuidv4} from './lib/auth';
@@ -69,4 +71,8 @@
     {:then}
         <SpotifySearch user={user}/>
     {/await}
+{:else}
+    <Announce/>
 {/if}
+
+<Footer/>

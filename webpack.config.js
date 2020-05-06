@@ -2,9 +2,13 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SitemapPlugin = require('sitemap-webpack-plugin').default;
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
+
+const paths = ['/'];
 
 module.exports = {
     entry: {
@@ -77,7 +81,12 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: '[name]-[hash].css'
         }),
-        new FixStyleOnlyEntriesPlugin()
+        new FixStyleOnlyEntriesPlugin(),
+        new SitemapPlugin('https://spotisear.ch', paths),
+        new FaviconsWebpackPlugin({
+            logo: './src/logo.png',
+            prefix: ''
+        })
     ],
     devtool: prod ? false : 'source-map'
 };

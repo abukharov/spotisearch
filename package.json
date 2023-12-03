@@ -24,7 +24,7 @@
     "author": "Alex Bukharov <alexv@yarrow.su>",
     "license": "ISC",
     "devDependencies": {
-        "@commitlint/cli": "^8.3.5",
+        "@commitlint/cli": "^8.3.6",
         "@commitlint/config-conventional": "^8.3.4",
         "autoprefixer": "^9.7.6",
         "bootstrap": "^4.4.1",

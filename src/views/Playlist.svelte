@@ -112,8 +112,11 @@
             {#if track.matched || !searchString}
             <tr>
                 <td>{track.track.track_number === 0 ? ' ' : track.track.track_number}</td>
+                <!-- eslint-disable-next-line svelte/no-at-html-tags  -->
                 <td>{@html track.markupName}</td>
+                <!-- eslint-disable-next-line svelte/no-at-html-tags  -->
                 <td>{@html track.markupArtist}</td>
+                <!-- eslint-disable-next-line svelte/no-at-html-tags  -->
                 <td>{@html track.markupAlbum}</td>
                 <td>{track.added_at}</td>
             </tr>

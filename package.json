@@ -31,13 +31,13 @@
         "last 2 versions"
     ],
     "lint-staged": {
-        "*.{svelte}": [
+        "*.svelte": [
             "npm run lint:prettier"
         ],
-        "*.{js}": [
+        "*.js": [
             "npm run lint:eslint"
         ],
-        "*.{scss}": [
+        "*.scss": [
             "npm run lint:stylelint"
         ]
     },

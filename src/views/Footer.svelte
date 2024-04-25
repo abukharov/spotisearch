@@ -1,5 +1,5 @@
 <script>
-    import { Row, Col, Footer, Container } from "sveltestrap";
+    import { Row, Col, Footer, Container } from '@sveltestrap/sveltestrap';
 </script>
 
 <footer class="footer">

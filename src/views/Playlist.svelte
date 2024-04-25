@@ -1,5 +1,5 @@
 <script>
-    import { Table, Collapse, Spinner } from 'sveltestrap';
+    import { Table, Collapse, Spinner } from '@sveltestrap/sveltestrap';
     import spotify, {backoff, throttled} from '../lib/spotify';
     import { onMount } from 'svelte';
 

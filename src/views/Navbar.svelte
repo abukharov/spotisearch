@@ -1,5 +1,5 @@
 <script>
-    import { Nav, Navbar, NavbarBrand, NavItem, Button } from 'sveltestrap';
+    import { Nav, Navbar, NavbarBrand, NavItem, Button } from '@sveltestrap/sveltestrap';
     export let user;
     export let authStart;
     export let logout;

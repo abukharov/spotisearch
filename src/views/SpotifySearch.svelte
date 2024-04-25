@@ -1,5 +1,5 @@
 <script>
-    import { Table, FormGroup, Label, Input } from 'sveltestrap';
+    import { Table, FormGroup, Label, Input } from '@sveltestrap/sveltestrap';
 
     import Playlist from './Playlist.svelte';
     import spotify, {backoff, throttled} from '../lib/spotify';

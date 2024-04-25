@@ -1,6 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const SitemapPlugin = require('sitemap-webpack-plugin').default;
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
@@ -17,15 +17,16 @@ module.exports = {
     },
     resolve: {
         alias: {
-            svelte: path.resolve('node_modules', 'svelte')
+            svelte: path.resolve('node_modules', 'svelte/src/runtime')
         },
+        conditionNames: ['svelte', 'browser', 'import'],
         extensions: ['.mjs', '.js', '.svelte'],
         mainFields: ['svelte', 'browser', 'module', 'main']
     },
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: '[name]-[hash].js',
-        chunkFilename: '[name]-[hash].[id].js'
+        filename: '[name]-[fullhash].js',
+        chunkFilename: '[name]-[chunkhash].[id].js'
     },
     module: {
         rules: [
@@ -69,6 +70,12 @@ module.exports = {
                         loader: 'sass-loader'
                     }
                 ]
+            },
+            {
+                test: /\.m?js/,
+                resolve: {
+                    fullySpecified: false
+                }
             }
         ]
     },
@@ -79,14 +86,31 @@ module.exports = {
             filename: path.join(__dirname, 'dist', 'index.html')
         }),
         new MiniCssExtractPlugin({
-            filename: '[name]-[hash].css'
+            filename: '[name]-[fullhash].css',
+            chunkFilename: '[name]-[chunkhash].[id].js'
         }),
-        new FixStyleOnlyEntriesPlugin(),
-        new SitemapPlugin('https://spotisear.ch', paths),
+        new RemoveEmptyScriptsPlugin(),
+        new SitemapPlugin({ base: 'https://spotisear.ch', paths }),
         new FaviconsWebpackPlugin({
             logo: './src/logo.png',
             prefix: ''
         })
     ],
-    devtool: prod ? false : 'source-map'
+    devtool: prod ? false : 'source-map',
+    devServer: prod
+        ? false
+        : {
+              hot: true, // enable HMR on the server
+              static: path.resolve(__dirname, './', 'dist'), // match the output path
+              port: 3000,
+              host: '0.0.0.0',
+              historyApiFallback: true,
+              client: {
+                overlay: {
+                  errors: true,
+                  warnings: false,
+                  runtimeErrors: true,
+                },
+              }
+          }
 };

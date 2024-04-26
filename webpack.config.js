@@ -17,6 +17,7 @@ module.exports = {
     },
     resolve: {
         alias: {
+            process: require.resolve('process/browser'),
             svelte: path.resolve('node_modules', 'svelte/src/runtime')
         },
         conditionNames: ['svelte', 'browser', 'import'],
@@ -27,6 +28,11 @@ module.exports = {
         path: path.join(__dirname, 'dist'),
         filename: '[name]-[fullhash].js',
         chunkFilename: '[name]-[chunkhash].[id].js'
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all'
+        }
     },
     module: {
         rules: [
@@ -102,15 +108,17 @@ module.exports = {
         : {
               hot: true, // enable HMR on the server
               static: path.resolve(__dirname, './', 'dist'), // match the output path
-              port: 3000,
+              server: 'https',
+              port: 443,
               host: '0.0.0.0',
+              allowedHosts: 'all',
               historyApiFallback: true,
               client: {
-                overlay: {
-                  errors: true,
-                  warnings: false,
-                  runtimeErrors: true,
-                },
+                  overlay: {
+                      errors: true,
+                      warnings: false,
+                      runtimeErrors: true
+                  }
               }
           }
 };

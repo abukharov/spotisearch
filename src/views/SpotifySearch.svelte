@@ -4,6 +4,7 @@
     import Playlist from './Playlist.svelte';
     import spotify, {backoff, throttled} from '../lib/spotify';
     import { onMount } from 'svelte';
+    import process from 'process';
 
     export let user;
 

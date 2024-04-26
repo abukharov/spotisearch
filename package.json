@@ -63,6 +63,7 @@
         "postcss": "^8.4.38",
         "prettier": "^3.2.5",
         "prettier-plugin-svelte": "^3.2.3",
+        "process": "^0.11.10",
         "promise-throttle": "^1.1.2",
         "ress": "^5.0.2",
         "rimraf": "^5.0.5",

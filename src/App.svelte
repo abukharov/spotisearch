@@ -69,7 +69,11 @@
     {#await getUserProfile()}
         <p>Loading user...</p>
     {:then}
-        <SpotifySearch user={user}/>
+        {#if user}
+            <SpotifySearch user={user}/>
+        {:else}
+            <Announce/>
+        {/if}
     {/await}
 {:else}
     <Announce/>

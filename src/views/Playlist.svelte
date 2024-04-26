@@ -2,6 +2,7 @@
     import { Table, Collapse, Spinner } from '@sveltestrap/sveltestrap';
     import spotify, {backoff, throttled} from '../lib/spotify';
     import { onMount } from 'svelte';
+    import process from 'process';
 
     export let playlist;
     export let searchString;

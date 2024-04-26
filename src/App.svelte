@@ -9,6 +9,7 @@
     import spotify from './lib/spotify';
 
     let user;
+    let authorising = localStorage.getItem('isAuthorising') || false;
     let authToken = localStorage.getItem('authToken');
     let errorMessage = localStorage.getItem('errorMessage');
 
@@ -20,6 +21,7 @@
     $: isAuthorised = spotify.getAccessToken() !== null;
 
     function spotifyAuthStart() {
+        localStorage.setItem('isAuthorising', true);
         if (!localStorage.getItem('stateUuid')) {
             localStorage.setItem('stateUuid', uuidv4());
         }
@@ -33,8 +35,17 @@
     }
 
     async function getUserProfile() {
-        const r = await spotify.getMe();
-        user = r;
+        try {
+            user = await spotify.getMe();
+        } catch (e) {
+            if (e.status === 401) {
+                const errorText = JSON.parse(e.responseText).error.message;
+                if (errorText === 'The access token expired') {
+                    localStorage.removeItem('authToken');
+                    spotifyAuthStart();
+                }
+            }
+        }
     }
 
     function spotifyLogout() {
@@ -53,6 +64,7 @@
             }
             localStorage.setItem('authToken', tokenParams.get('access_token'));
             localStorage.removeItem('errorMessage');
+            localStorage.removeItem('isAuthorising');
             location.replace('/');
             return;
         }
@@ -62,21 +74,23 @@
 <Navbar authStart={spotifyAuthStart} logout={spotifyLogout} user={user}/>
 
 {#if isError}
-    <p class="error">{errorMessage}</p>
+    <p class="alert alert-danger" role="alert">{errorMessage}</p>
 {/if}
 
-{#if isAuthorised}
+{#if !isAuthorised && !authorising}
+    <Announce/>
+{:else if authorising}
+    <p>Authorising via Spotify...</p>
+{:else if isAuthorised}
     {#await getUserProfile()}
         <p>Loading user...</p>
     {:then}
         {#if user}
             <SpotifySearch user={user}/>
         {:else}
-            <Announce/>
+            {localStorage.setItem('errorMessage', 'Failed to authorise with Spotify. Please try again.')}
         {/if}
     {/await}
-{:else}
-    <Announce/>
 {/if}
 
 <Footer/>

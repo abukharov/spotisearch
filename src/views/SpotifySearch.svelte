@@ -1,15 +1,17 @@
 <script>
-    import { Table, FormGroup, Label, Input } from '@sveltestrap/sveltestrap';
+    import { Table, FormGroup, Input, InputGroup, InputGroupText, Row, Col, Icon } from '@sveltestrap/sveltestrap';
 
     import Playlist from './Playlist.svelte';
     import spotify, {backoff, throttled} from '../lib/spotify';
     import { onMount } from 'svelte';
+    import process from 'process';
 
     export let user;
 
     let playlists = [];
     let playlistsLoading = false;
     let searchString = '';
+    let onlyNonPlayable = false;
 
     async function loadUserPlaylists() {
         const p = new Promise(async function(resolve, reject) {
@@ -40,8 +42,17 @@
 </script>
 
 <FormGroup>
-  <Label>Search for</Label>
-  <Input type="text" bind:value={searchString} />
+    <Row>
+        <Col sm="6" md="3">
+            <InputGroup>
+                <InputGroupText><Icon name="search" /></InputGroupText>
+                <Input type="text" bind:value={searchString} />
+            </InputGroup>
+        </Col>
+        <Col sm="6" md="3">
+            <Input type="switch" bind:checked={onlyNonPlayable} label="Show only non-playable" />
+        </Col>
+    </Row>
 </FormGroup>
 
 <Table hover>
@@ -49,13 +60,12 @@
     <tr>
         <th>Name</th>
         <th>Owner</th>
-        <th></th>
         <th>Songs</th>
     </tr>
 </thead>
 <tbody>
 {#each playlists as playlist}
-    <Playlist playlist={playlist} searchString={searchString}/>
+    <Playlist playlist={playlist} searchString={searchString} onlyNonPlayable={onlyNonPlayable}/>
 {/each}
 </tbody>
 </Table>

@@ -9,7 +9,6 @@
     import spotify from './lib/spotify';
 
     let user;
-    let authorising = localStorage.getItem('isAuthorising') || false;
     let authToken = localStorage.getItem('authToken');
     let errorMessage = localStorage.getItem('errorMessage');
 
@@ -19,6 +18,15 @@
 
     $: isError = errorMessage !== null;
     $: isAuthorised = spotify.getAccessToken() !== null;
+    $: isAuthorising = localStorage.getItem('isAuthorising') || false;
+
+    function returnNothing() {
+        return '';
+    }
+
+    function setError(message) {
+        localStorage.setItem('errorMessage', message);
+    }
 
     function spotifyAuthStart() {
         localStorage.setItem('isAuthorising', true);
@@ -58,7 +66,7 @@
             const hashString = location.hash.replace(/^#+/, '');
             const tokenParams = new URLSearchParams(hashString);
             if (tokenParams.get('state') !== localStorage.getItem('stateUuid')) {
-                localStorage.setItem('errorMessage', 'Spotify returned the wrong state. Make sure you orginate authorisation from this website');
+                setError('Spotify returned the wrong state. Make sure you orginate authorisation from this website');
                 location.replace('/');
                 return;
             }
@@ -77,9 +85,9 @@
     <p class="alert alert-danger" role="alert">{errorMessage}</p>
 {/if}
 
-{#if !isAuthorised && !authorising}
+{#if !isAuthorised && !isAuthorising}
     <Announce/>
-{:else if authorising}
+{:else if isAuthorising}
     <p>Authorising via Spotify...</p>
 {:else if isAuthorised}
     {#await getUserProfile()}
@@ -87,8 +95,8 @@
     {:then}
         {#if user}
             <SpotifySearch user={user}/>
-        {:else}
-            {localStorage.setItem('errorMessage', 'Failed to authorise with Spotify. Please try again.')}
+        {:else if !isAuthorising}
+            {returnNothing(setError('Failed to authorise with Spotify. Please try again.'))}
         {/if}
     {/await}
 {/if}

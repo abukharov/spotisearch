@@ -5,9 +5,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const SitemapPlugin = require('sitemap-webpack-plugin').default;
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
-const mode = process.env.NODE_ENV || 'development';
-const prod = mode === 'production';
-
 const paths = ['/'];
 
 module.exports = {
@@ -23,16 +20,6 @@ module.exports = {
         conditionNames: ['svelte', 'browser', 'import'],
         extensions: ['.mjs', '.js', '.svelte'],
         mainFields: ['svelte', 'browser', 'module', 'main']
-    },
-    output: {
-        path: path.join(__dirname, 'dist'),
-        filename: '[name]-[fullhash].js',
-        chunkFilename: '[name]-[chunkhash].[id].js'
-    },
-    optimization: {
-        splitChunks: {
-            chunks: 'all'
-        }
     },
     module: {
         rules: [
@@ -54,14 +41,7 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [
-                    /**
-                     * MiniCssExtractPlugin doesn't support HMR.
-                     * For developing, use 'style-loader' instead.
-                     * */
-                    prod ? MiniCssExtractPlugin.loader : 'style-loader',
-                    'css-loader'
-                ]
+                use: ['style-loader', 'css-loader']
             },
             {
                 test: /\.scss$/,
@@ -78,6 +58,10 @@ module.exports = {
                 ]
             },
             {
+                test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/i,
+                type: 'asset/inline',
+            },
+            {
                 test: /\.m?js/,
                 resolve: {
                     fullySpecified: false
@@ -85,7 +69,7 @@ module.exports = {
             }
         ]
     },
-    mode,
+    mode: 'development',
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html',
@@ -102,23 +86,21 @@ module.exports = {
             prefix: ''
         })
     ],
-    devtool: prod ? false : 'source-map',
-    devServer: prod
-        ? false
-        : {
-              hot: true, // enable HMR on the server
-              static: path.resolve(__dirname, './', 'dist'), // match the output path
-              server: 'https',
-              port: 443,
-              host: '0.0.0.0',
-              allowedHosts: 'all',
-              historyApiFallback: true,
-              client: {
-                  overlay: {
-                      errors: true,
-                      warnings: false,
-                      runtimeErrors: true
-                  }
-              }
-          }
+    devtool: 'source-map',
+    devServer: {
+        hot: true, // enable HMR on the server
+        static: path.resolve(__dirname, './', 'dist'), // match the output path
+        server: 'https',
+        port: 443,
+        host: '0.0.0.0',
+        allowedHosts: 'all',
+        historyApiFallback: true,
+        client: {
+            overlay: {
+                errors: true,
+                warnings: false,
+                runtimeErrors: true
+            }
+        }
+    }
 };

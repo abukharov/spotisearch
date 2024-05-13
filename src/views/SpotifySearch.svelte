@@ -4,7 +4,6 @@
     import Playlist from './Playlist.svelte';
     import spotify, {backoff, throttled} from '../lib/spotify';
     import { onMount } from 'svelte';
-    import process from 'process';
 
     export let user;
 
@@ -13,44 +12,39 @@
     let searchString = '';
     let onlyNonPlayable = false;
 
-    async function loadUserPlaylists() {
-        const p = new Promise(async function(resolve, reject) {
-            let r = await throttled.add(backoff.bind(this, 10, spotify.getUserPlaylists.bind(this, user.id, {limit: 20, offset: 0})));
-            playlists = playlists.concat(r.items);
-            const loop = async function() {
-                if (!r.next) {
-                    playlistsLoading = false;
-                    resolve();
-                    return null;
-                }
-                const urlNext = new URL(r.next);
-                const offsetNext = urlNext.searchParams.get('offset');
-                const limitNext = urlNext.searchParams.get('limit');
-                r = await throttled.add(backoff.bind(this, 10, spotify.getUserPlaylists.bind(this, user.id, {limit: limitNext, offset: offsetNext})));
-                playlists = playlists.concat(r.items);
-                loop();
-            }
-            process.nextTick(loop);
-        });
-        return p;
+    let owners = ['me', 'all'];
+
+    async function* loadUserPlaylists() {
+        let r = await throttled.add(backoff.bind(this, 10, spotify.getUserPlaylists.bind(this, user.id, {limit: 20, offset: 0})));
+        yield r.items;
+        while (r.next) {
+            const urlNext = new URL(r.next);
+            const offsetNext = urlNext.searchParams.get('offset');
+            const limitNext = urlNext.searchParams.get('limit');
+            r = await throttled.add(backoff.bind(this, 10, spotify.getUserPlaylists.bind(this, user.id, {limit: limitNext, offset: offsetNext})));
+            yield r.items;
+        }
     }
 
     onMount(async function() {
         playlistsLoading = true;
-        await loadUserPlaylists();
+        for await (let p of loadUserPlaylists()) {
+            playlists = playlists.concat(p.filter(x => x.owner.id === user.id));
+        }
+        playlistsLoading = false;
     });
 </script>
 
 <FormGroup>
-    <Row>
-        <Col sm="6" md="3">
+    <Row class="align-items-center">
+        <Col sm="6" md="4">
             <InputGroup>
                 <InputGroupText><Icon name="search" /></InputGroupText>
-                <Input type="text" bind:value={searchString} />
+                <Input disabled={playlistsLoading} type="text" bind:value={searchString} />
             </InputGroup>
         </Col>
-        <Col sm="6" md="3">
-            <Input type="switch" bind:checked={onlyNonPlayable} label="Show only non-playable" />
+        <Col sm="6" md="4">
+            <Input disabled={playlistsLoading} type="switch" bind:checked={onlyNonPlayable} label="Show only non-playable" />
         </Col>
     </Row>
 </FormGroup>

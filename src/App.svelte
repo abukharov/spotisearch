@@ -37,7 +37,7 @@
         spotifyAuthUri.searchParams.set('client_id', spotifyClientId);
         spotifyAuthUri.searchParams.set('response_type', 'token');
         spotifyAuthUri.searchParams.set('redirect_uri', location.href);
-        spotifyAuthUri.searchParams.set('scope', 'user-read-private user-read-email');
+        spotifyAuthUri.searchParams.set('scope', 'user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read');
         spotifyAuthUri.searchParams.set('state', localStorage.getItem('stateUuid'));
         location.replace(spotifyAuthUri.href);
     }

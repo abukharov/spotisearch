@@ -79,7 +79,7 @@
                 track.nameMatch = track.track.name.indexOf(s);
                 track.albumMatch = track.track.album.name.indexOf(s);
                 track.artistMatch = track.track.artists[0].name.indexOf(s);
-                track.isrcMatch = track.track.external_ids.isrc.indexOf(s);
+                track.isrcMatch = track.track.external_ids.isrc && track.track.external_ids.isrc.indexOf(s);
                 track.linkMatch = track.track.external_urls.spotify && track.track.external_urls.spotify.indexOf(s);
             }
             track.searchMatched =

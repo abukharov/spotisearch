@@ -15,8 +15,7 @@
         "format": "npm-run-all -c format:*",
         "format:eslint": "eslint --fix src/**/*.{js,svelte}",
         "format:stylelint": "stylelint --fix src/**/*.scss",
-        "format:prettier": "prettier --write src/**/*.{js,scss,svelte}",
-        "prepare": "husky install"
+        "format:prettier": "prettier --write src/**/*.{js,scss,svelte}"
     },
     "keywords": [
         "spotify",
@@ -58,7 +57,6 @@
         "eslint-plugin-svelte": "^2.38.0",
         "favicons-webpack-plugin": "^6.0.1",
         "html-webpack-plugin": "^5.6.0",
-        "lint-staged": "^15.2.2",
         "mini-css-extract-plugin": "^2.9.0",
         "npm-run-all": "^4.1.5",
         "postcss": "^8.4.38",

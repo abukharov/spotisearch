@@ -30,20 +30,7 @@
     "browserslist": [
         "last 2 versions"
     ],
-    "lint-staged": {
-        "*.svelte": [
-            "npm run lint:prettier"
-        ],
-        "*.js": [
-            "npm run lint:eslint"
-        ],
-        "*.scss": [
-            "npm run lint:stylelint"
-        ]
-    },
     "devDependencies": {
-        "@commitlint/cli": "^19.3.0",
-        "@commitlint/config-conventional": "^19.2.2",
         "@sveltestrap/sveltestrap": "^6.2.7",
         "autoprefixer": "^10.4.19",
         "bootstrap": "^5.3.3",

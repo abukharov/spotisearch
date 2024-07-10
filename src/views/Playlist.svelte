@@ -36,7 +36,7 @@
         external_urls: {
             spotify: ''
         },
-        preview_url: null,
+        preview_url: null
     };
 
     let tracks = [];
@@ -83,7 +83,11 @@
                 track.linkMatch = track.track.external_urls.spotify && track.track.external_urls.spotify.indexOf(s);
             }
             track.searchMatched =
-                track.nameMatch >= 0 || track.albumMatch >= 0 || track.artistMatch >= 0 || track.isrcMatch >= 0 || track.linkMatch >= 0;
+                track.nameMatch >= 0 ||
+                track.albumMatch >= 0 ||
+                track.artistMatch >= 0 ||
+                track.isrcMatch >= 0 ||
+                track.linkMatch >= 0;
 
             if (s && o) {
                 track.matched = track.searchMatched && track.playableMatched;
@@ -129,14 +133,22 @@
     }
 
     async function* loadPlaylistTracks() {
-        console.log('Loading tracks in playlist: ', playlist.name)
-        let r = await throttled.add(backoff.bind(this, 10, spotify.getPlaylistTracks.bind(this, playlist.id, {limit: 100, offset: 0})));
+        console.log('Loading tracks in playlist: ', playlist.name);
+        let r = await throttled.add(
+            backoff.bind(this, 10, spotify.getPlaylistTracks.bind(this, playlist.id, { limit: 100, offset: 0 }))
+        );
         yield r.items;
         while (r.next) {
             const urlNext = new URL(r.next);
             const offsetNext = urlNext.searchParams.get('offset');
             const limitNext = urlNext.searchParams.get('limit');
-            r = await throttled.add(backoff.bind(this, 10, spotify.getPlaylistTracks.bind(this, playlist.id, {limit: limitNext, offset: offsetNext})));
+            r = await throttled.add(
+                backoff.bind(
+                    this,
+                    10,
+                    spotify.getPlaylistTracks.bind(this, playlist.id, { limit: limitNext, offset: offsetNext })
+                )
+            );
             yield r.items;
         }
     }

@@ -9,14 +9,14 @@
     <NavbarBrand href="/">Spotisearch</NavbarBrand>
     <Nav class="ml-auto" navbar>
         {#if user}
-        <NavItem>
-            <span class="navbar-brand mb-0 h1">{user.id} ({user.email})</span>
-            <Button color="success" on:click={logout}>Logout</Button>
-        </NavItem>
+            <NavItem>
+                <span class="navbar-brand mb-0 h1">{user.id} ({user.email})</span>
+                <Button color="success" on:click={logout}>Logout</Button>
+            </NavItem>
         {:else}
-        <NavItem>
-            <Button color="success" on:click={authStart}>Authorise via Spotify</Button>
-        </NavItem>
+            <NavItem>
+                <Button color="success" on:click={authStart}>Authorise via Spotify</Button>
+            </NavItem>
         {/if}
     </Nav>
 </Navbar>

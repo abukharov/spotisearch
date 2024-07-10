@@ -11,11 +11,11 @@
         "lint:eslint": "eslint src/**/*.{js,svelte}",
         "lint:stylelint": "stylelint src/**/*.scss",
         "lint:prettier": "prettier --check src/**/*.{js,scss}",
+        "test": "echo \"Tests are coming soon...\"",
         "format": "npm-run-all -c format:*",
         "format:eslint": "eslint --fix src/**/*.{js,svelte}",
         "format:stylelint": "stylelint --fix src/**/*.scss",
-        "format:prettier": "prettier --write src/**/*.{js,scss,svelte}",
-        "prepare": "husky install"
+        "format:prettier": "prettier --write src/**/*.{js,scss,svelte}"
     },
     "keywords": [
         "spotify",
@@ -30,20 +30,7 @@
     "browserslist": [
         "last 2 versions"
     ],
-    "lint-staged": {
-        "*.svelte": [
-            "npm run lint:prettier"
-        ],
-        "*.js": [
-            "npm run lint:eslint"
-        ],
-        "*.scss": [
-            "npm run lint:stylelint"
-        ]
-    },
     "devDependencies": {
-        "@commitlint/cli": "^19.3.0",
-        "@commitlint/config-conventional": "^19.2.2",
         "@sveltestrap/sveltestrap": "^6.2.7",
         "autoprefixer": "^10.4.19",
         "bootstrap": "^5.3.3",
@@ -57,8 +44,6 @@
         "eslint-plugin-svelte": "^2.38.0",
         "favicons-webpack-plugin": "^6.0.1",
         "html-webpack-plugin": "^5.6.0",
-        "husky": "^8.0.0",
-        "lint-staged": "^15.2.2",
         "mini-css-extract-plugin": "^2.9.0",
         "npm-run-all": "^4.1.5",
         "postcss": "^8.4.38",

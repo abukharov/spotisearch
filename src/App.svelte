@@ -5,7 +5,7 @@
     import Footer from './views/Footer.svelte';
 
     import { onMount } from 'svelte';
-    import {spotifyClientId, uuidv4} from './lib/auth';
+    import { spotifyClientId, uuidv4 } from './lib/auth';
     import spotify from './lib/spotify';
 
     let user;
@@ -37,7 +37,10 @@
         spotifyAuthUri.searchParams.set('client_id', spotifyClientId);
         spotifyAuthUri.searchParams.set('response_type', 'token');
         spotifyAuthUri.searchParams.set('redirect_uri', location.href);
-        spotifyAuthUri.searchParams.set('scope', 'user-read-private user-read-email');
+        spotifyAuthUri.searchParams.set(
+            'scope',
+            'user-read-private user-read-email playlist-read-private playlist-read-collaborative user-library-read'
+        );
         spotifyAuthUri.searchParams.set('state', localStorage.getItem('stateUuid'));
         location.replace(spotifyAuthUri.href);
     }
@@ -61,7 +64,7 @@
         location.replace('/');
     }
 
-    onMount(function() {
+    onMount(function () {
         if (location.hash) {
             const hashString = location.hash.replace(/^#+/, '');
             const tokenParams = new URLSearchParams(hashString);
@@ -79,14 +82,14 @@
     });
 </script>
 
-<Navbar authStart={spotifyAuthStart} logout={spotifyLogout} user={user}/>
+<Navbar authStart={spotifyAuthStart} logout={spotifyLogout} {user} />
 
 {#if isError}
     <p class="alert alert-danger" role="alert">{errorMessage}</p>
 {/if}
 
 {#if !isAuthorised && !isAuthorising}
-    <Announce/>
+    <Announce />
 {:else if isAuthorising}
     <p>Authorising via Spotify...</p>
 {:else if isAuthorised}
@@ -94,11 +97,11 @@
         <p>Loading user...</p>
     {:then}
         {#if user}
-            <SpotifySearch user={user}/>
+            <SpotifySearch {user} />
         {:else if !isAuthorising}
             {returnNothing(setError('Failed to authorise with Spotify. Please try again.'))}
         {/if}
     {/await}
 {/if}
 
-<Footer/>
+<Footer />

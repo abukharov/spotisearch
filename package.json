@@ -6,6 +6,7 @@
     "scripts": {
         "build": "rimraf ./dist && cross-env NODE_ENV=production webpack --config webpack.prod.config.js",
         "publish": "aws s3 rm --recursive s3://spotify-search-yarrow-su && aws s3 cp --recursive dist s3://spotify-search-yarrow-su",
+        "invalidate": "aws cloudfront create-invalidation --distribution-id EM41EINGDT7P2 --paths '/*'",
         "dev": "cross-env NODE_ENV=development webpack serve --config webpack.dev.config.js",
         "lint": "npm-run-all -c lint:*",
         "lint:eslint": "eslint src/**/*.{js,svelte}",

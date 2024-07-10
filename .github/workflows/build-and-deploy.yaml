@@ -37,3 +37,6 @@ jobs:
 
       - name: Publish to S3 bucket
         run: npm run publish
+
+      - name: Invalidate CloudFront cache
+        run: npm run invalidate

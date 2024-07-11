@@ -1,5 +1,5 @@
 <script>
-    import { Table, FormGroup, Input, InputGroup, InputGroupText, Row, Col, Icon } from '@sveltestrap/sveltestrap';
+    import { Table, FormGroup, Button, Input, InputGroup, InputGroupText, Row, Col, Icon } from '@sveltestrap/sveltestrap';
 
     import Playlist from './Playlist.svelte';
     import spotify, { backoff, throttled } from '../lib/spotify';
@@ -34,6 +34,21 @@
         }
     }
 
+    async function exportAllAsCsv() {
+        const csv = [
+            '"Playlist","Track","Artist","Album","Track link"',
+            ...playlists.map((playlist) => playlist.getVisibleTracks().map((track) => {
+                return `"${track.track.name}","${track.track.artists[0].name}","${track.track.album.name}","${track.track.external_urls.spotify}"`;
+            })).flat()
+        ].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `all.csv`;
+        a.click();
+    }
+
     onMount(async function () {
         playlistsLoading = true;
         for await (let p of loadUserPlaylists()) {
@@ -45,6 +60,10 @@
 
 <FormGroup>
     <Row class="align-items-center">
+        <Button color="primary" on:click={exportAllAsCsv}>
+            <Icon name="table" />
+            <span class="ml-2">Export all as CSV</span>
+        </Button>
         <Col sm="6" md="4">
             <InputGroup>
                 <InputGroupText><Icon name="search" /></InputGroupText>

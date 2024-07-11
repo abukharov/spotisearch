@@ -19,6 +19,7 @@
     export let playlist;
     export let searchString;
     export let onlyNonPlayable;
+    export const getVisibleTracks = () => visibleTracks;
 
     const nullTrack = {
         name: '',
@@ -50,6 +51,8 @@
     let trVisible = false;
     $: isOpen = clickOpen || isMatch;
     $: isTrVisible = trVisible;
+
+
 
     function markupMatch(prop, s, match) {
         if (!prop) {

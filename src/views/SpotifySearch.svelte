@@ -8,6 +8,7 @@
     export let user;
 
     let playlists = [];
+    let plVisTracksFuns = [];
     let playlistsLoading = false;
     let searchString = '';
     let onlyNonPlayable = false;
@@ -37,8 +38,8 @@
     async function exportAllAsCsv() {
         const csv = [
             '"Playlist","Track","Artist","Album","Track link"',
-            ...playlists.map((playlist) => playlist.getVisibleTracks().map((track) => {
-                return `"${track.track.name}","${track.track.artists[0].name}","${track.track.album.name}","${track.track.external_urls.spotify}"`;
+            ...plVisTracksFuns.map((getVisibleTracks) => getVisibleTracks().map((track) => {
+                return `"${track.playlistName}","${track.track.name}","${track.track.artists[0].name}","${track.track.album.name}","${track.track.external_urls.spotify}"`;
             })).flat()
         ].join('\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -60,10 +61,12 @@
 
 <FormGroup>
     <Row class="align-items-center">
-        <Button color="primary" on:click={exportAllAsCsv}>
-            <Icon name="table" />
-            <span class="ml-2">Export all as CSV</span>
-        </Button>
+        <Col sm="6" md="4">
+            <Button color="success" disabled={playlistsLoading} on:click={exportAllAsCsv}>
+                <Icon name="table" />
+                <span class="ml-2">Export all as CSV</span>
+            </Button>
+        </Col>
         <Col sm="6" md="4">
             <InputGroup>
                 <InputGroupText><Icon name="search" /></InputGroupText>
@@ -90,8 +93,8 @@
         </tr>
     </thead>
     <tbody>
-        {#each playlists as playlist}
-            <Playlist {playlist} {searchString} {onlyNonPlayable} />
+        {#each playlists as playlist, i}
+            <Playlist bind:getVisibleTracks={plVisTracksFuns[i]} {playlist} {searchString} {onlyNonPlayable} />
         {/each}
     </tbody>
 </Table>

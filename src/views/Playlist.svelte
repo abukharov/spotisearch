@@ -14,7 +14,6 @@
     } from '@sveltestrap/sveltestrap';
     import spotify, { backoff, throttled } from '../lib/spotify';
     import { onMount } from 'svelte';
-    import process from 'process';
 
     export let playlist;
     export let searchString;
@@ -50,6 +49,10 @@
     let trVisible = false;
     $: isOpen = clickOpen || isMatch;
     $: isTrVisible = trVisible;
+
+    export function getVisibleTracks() {
+        return visibleTracks.map((track) => Object.assign(track, { playlistName: playlist.name }));
+    }
 
     function markupMatch(prop, s, match) {
         if (!prop) {

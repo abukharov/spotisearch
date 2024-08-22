@@ -60,10 +60,12 @@
 
 <FormGroup>
     <Row class="align-items-center">
-        <Button color="primary" on:click={exportAllAsCsv}>
-            <Icon name="table" />
-            <span class="ml-2">Export all as CSV</span>
-        </Button>
+        <Col sm="6" md="4">
+            <Button color="primary" on:click={exportAllAsCsv}>
+                <Icon name="table" />
+                <span class="ml-2">Export all as CSV</span>
+            </Button>
+        </Col>
         <Col sm="6" md="4">
             <InputGroup>
                 <InputGroupText><Icon name="search" /></InputGroupText>
